@@ -64,7 +64,7 @@ function WeightsPie({ weights }: { weights: Record<string, number> }) {
 }
 
 export default function App() {
-  const [tickers, setTickers] = useState("AAPL,MSFT,GOOGL,AMZN");
+  const [tickers, setTickers] = useState(["AAPL", "MSFT", "GOOGL", "AMZN"]);
   const [startDate, setStartDate] = useState("2020-01-01");
   const [endDate, setEndDate] = useState("2024-01-01");
   const [riskFreeRate, setRiskFreeRate] = useState("2");
@@ -82,7 +82,7 @@ export default function App() {
     setSelected(null);
     try {
       const res = await axios.post("https://efficient-frontier-jbcn.onrender.com/efficient-frontier", {
-        tickers: tickers.split(",").map(t => t.trim().toUpperCase()),
+        tickers: tickers.map(t => t.trim().toUpperCase()).filter(t => t),
         start_date: startDate,
         end_date: endDate,
         num_portfolios: 3000,
@@ -119,11 +119,25 @@ export default function App() {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: 32, fontFamily: "sans-serif" }}>
       <h1>Efficient Frontier</h1>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+      <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginBottom: 16, alignItems: "flex-start" }}>
         <div>
-          <label>Tickers (comma separated)<br />
-            <input value={tickers} onChange={e => setTickers(e.target.value)} style={{ width: 300, padding: 6 }} />
-          </label>
+          <label style={{ display: "block", marginBottom: 4 }}>Tickers</label>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {tickers.map((ticker, i) => (
+              <div key={i} style={{ display: "flex", gap: 4 }}>
+                <input
+                  value={ticker}
+                  onChange={e => setTickers(tickers.map((t, j) => j === i ? e.target.value.toUpperCase() : t))}
+                  placeholder="e.g. AAPL"
+                  style={{ width: 100, padding: 6 }}
+                />
+                {tickers.length > 2 && (
+                  <button onClick={() => setTickers(tickers.filter((_, j) => j !== i))} style={{ padding: "4px 8px", cursor: "pointer" }}>✕</button>
+                )}
+              </div>
+            ))}
+            <button onClick={() => setTickers([...tickers, ""])} style={{ padding: "4px 8px", cursor: "pointer", alignSelf: "flex-start" }}>+ Add ticker</button>
+          </div>
         </div>
         <div>
           <label>Start date<br />
