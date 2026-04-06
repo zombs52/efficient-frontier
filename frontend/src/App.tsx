@@ -32,7 +32,7 @@ export default function App() {
     setPortfolios([]);
     setSelected(null);
     try {
-      const res = await axios.post("http://localhost:8000/efficient-frontier", {
+      const res = await axios.post("https://efficient-frontier-jbcn.onrender.com/efficient-frontier", {
         tickers: tickers.split(",").map(t => t.trim().toUpperCase()),
         start_date: startDate,
         end_date: endDate,
