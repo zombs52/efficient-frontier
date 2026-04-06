@@ -54,7 +54,6 @@ function WeightsPie({ weights }: { weights: Record<string, number> }) {
         cx="50%"
         cy="45%"
         outerRadius={65}
-        label={({ name, value }) => value >= 5 ? `${name} ${value}%` : ""}
       >
         {data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
       </Pie>
@@ -88,11 +87,11 @@ export default function App() {
         end_date: endDate,
         num_portfolios: 3000,
         risk_free_rate: parseFloat(riskFreeRate) / 100 || 0,
-      });
+      }, { timeout: 90000 });
       setPortfolios(res.data.portfolios);
       setAssets(res.data.assets);
     } catch (e) {
-      setError("Something went wrong. Check your tickers and dates.");
+      setError("Something went wrong. If this is the first request in a while, the server may be waking up — wait 30 seconds and try again.");
     }
     setLoading(false);
   };
